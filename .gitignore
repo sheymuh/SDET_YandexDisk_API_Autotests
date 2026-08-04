@@ -3,6 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 /.idea/
+src/test/resources/configurations/config.properties
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

@@ -1,11 +1,11 @@
 package com.simbirsoft.tests;
 
 import com.simbirsoft.helpers.ParameterProvider;
+import io.restassured.response.Response;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasKey;
 
 /**
  * AuthTests.java
@@ -18,33 +18,46 @@ import static org.hamcrest.Matchers.hasKey;
  */
 public class AuthTests extends BaseTest {
     private final String DISK_PATH = "v1/disk/";
-    private final String ROOT = "$";
 
     @Test(description = "Проверка авторизации с валидным OAuth токеном")
     void authWithValidToken() {
         String login = "andreyblack45";
         String displayName = "Шеймухов Андрей";
 
-        given()
+        Response response = given()
                 .spec(spec)
                 .auth().oauth2(ParameterProvider.get("auth.token"))
                 .get(DISK_PATH)
                 .then()
                 .statusCode(200)
-                .body(ROOT, hasKey("user"))
-                .body("user.login", equalTo(login))
-                .body("user.display_name", equalTo(displayName));
+                .extract().response();
+
+        String userField = response.jsonPath().getString("user");
+        String loginField = response.jsonPath().getString("user.login");
+        String displayNameField = response.jsonPath().getString("user.display_name");
+
+        Assert.assertNotNull(userField, "Тело ответа не содержит поля user");
+        Assert.assertEquals(loginField, login,
+                "Поле user.login не соответствует данным пользователя");
+        Assert.assertEquals(displayNameField, displayName,
+                "Поле user.display_name не соответствует данным пользователя");
     }
 
     @Test(description = "Проверка авторизации без токена")
     void authWithoutToken() {
-        given()
+        Response response = given()
                 .spec(spec)
                 .get(DISK_PATH)
                 .then()
                 .statusCode(401)
-                .body(ROOT, hasKey("error"))
-                .body(ROOT, hasKey("description"))
-                .body(ROOT, hasKey("message"));
+                .extract().response();
+
+        String errorField = response.jsonPath().getString("error");
+        String descriptionField = response.jsonPath().getString("description");
+        String messageField = response.jsonPath().getString("message");
+
+        Assert.assertNotNull(errorField, "Тело ответа не содержит поля error");
+        Assert.assertNotNull(descriptionField, "Тело ответа не содержит поля description");
+        Assert.assertNotNull(messageField, "Тело ответа не содержит поля message");
     }
 }

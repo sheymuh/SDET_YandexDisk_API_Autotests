@@ -1,7 +1,6 @@
 package com.simbirsoft.api;
 
 import com.google.gson.Gson;
-import com.simbirsoft.dto.ErrorResponse;
 import com.simbirsoft.dto.ResourceActionResponse;
 import com.simbirsoft.dto.ResourceDataResponse;
 import io.restassured.response.Response;
@@ -19,11 +18,11 @@ import static org.hamcrest.Matchers.hasKey;
  * Date: 06.08.2026
  */
 public class ResourceApiClient extends BaseApiClient {
-    private static final String RESOURCES_ENDPOINT = "resources/";
-    private static final String RESOURCES_TRASH_ENDPOINT = "trash/resources/";
-    private static final String RESTORE_RESOURCE_ENDPOINT = RESOURCES_TRASH_ENDPOINT + "restore";
-    private static final String BODY_ROOT = "$";
-    private static final String PATH_PARAM = "path";
+    public static final String RESOURCES_ENDPOINT = "resources/";
+    public static final String RESOURCES_TRASH_ENDPOINT = "trash/resources/";
+    public static final String RESTORE_RESOURCE_ENDPOINT = RESOURCES_TRASH_ENDPOINT + "restore";
+    public static final String BODY_ROOT = "$";
+    public static final String PATH_PARAM = "path";
 
     private static Gson gson = new Gson();
 
@@ -66,21 +65,6 @@ public class ResourceApiClient extends BaseApiClient {
         return gson.fromJson(response.getBody().asString(), ResourceActionResponse.class);
     }
 
-    public static ErrorResponse createResourceWithInvalidPath(String path, int code) {
-        Response response = given()
-                .spec(SPEC)
-                .queryParam(PATH_PARAM, path)
-                .put(RESOURCES_ENDPOINT)
-                .then()
-                .statusCode(code)
-                .body(BODY_ROOT, hasKey("error"))
-                .body(BODY_ROOT, hasKey("description"))
-                .body(BODY_ROOT, hasKey("message"))
-                .extract().response();
-
-        return gson.fromJson(response.getBody().asString(), ErrorResponse.class);
-    }
-
     public static void deleteResource(String path) {
         given()
                 .spec(SPEC)
@@ -88,21 +72,6 @@ public class ResourceApiClient extends BaseApiClient {
                 .delete(RESOURCES_ENDPOINT)
                 .then()
                 .statusCode(204);
-    }
-
-    public static ErrorResponse deleteResourceWithInvalidPath(String path, int code) {
-        Response response = given()
-                .spec(SPEC)
-                .queryParam(PATH_PARAM, path)
-                .delete(RESOURCES_ENDPOINT)
-                .then()
-                .statusCode(code)
-                .body(BODY_ROOT, hasKey("error"))
-                .body(BODY_ROOT, hasKey("description"))
-                .body(BODY_ROOT, hasKey("message"))
-                .extract().response();
-
-        return gson.fromJson(response.getBody().asString(), ErrorResponse.class);
     }
 
     public static void deleteResourcePermanently(String path) {
@@ -153,20 +122,5 @@ public class ResourceApiClient extends BaseApiClient {
                 .extract().response();
 
         return gson.fromJson(response.getBody().asString(), ResourceActionResponse.class);
-    }
-
-    public static ErrorResponse restoreResourceWithInvalidPath(String path, int code) {
-        Response response = given()
-                .spec(SPEC)
-                .queryParam(PATH_PARAM, path)
-                .put(RESTORE_RESOURCE_ENDPOINT)
-                .then()
-                .statusCode(code)
-                .body(BODY_ROOT, hasKey("error"))
-                .body(BODY_ROOT, hasKey("description"))
-                .body(BODY_ROOT, hasKey("message"))
-                .extract().response();
-
-        return gson.fromJson(response.getBody().asString(), ErrorResponse.class);
     }
 }

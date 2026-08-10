@@ -1,5 +1,6 @@
 package com.simbirsoft.tests;
 
+import com.simbirsoft.api.BaseApiClient;
 import com.simbirsoft.api.ResourceApiClient;
 import com.simbirsoft.dto.Item;
 import com.simbirsoft.dto.ResourceDataResponse;
@@ -8,6 +9,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasKey;
 
 /**
  * FolderDeleteTests.java
@@ -72,6 +76,14 @@ public class FolderDeleteTests extends BaseTest {
         String nonExistingPath = "non-exist-path";
         int code = 404;
 
-        ResourceApiClient.deleteResourceWithInvalidPath(nonExistingPath, code);
+        given()
+                .spec(BaseApiClient.SPEC)
+                .queryParam(ResourceApiClient.PATH_PARAM, nonExistingPath)
+                .delete(ResourceApiClient.RESOURCES_ENDPOINT)
+                .then()
+                .statusCode(code)
+                .body(ResourceApiClient.BODY_ROOT, hasKey("error"))
+                .body(ResourceApiClient.BODY_ROOT, hasKey("description"))
+                .body(ResourceApiClient.BODY_ROOT, hasKey("message"));
     }
 }

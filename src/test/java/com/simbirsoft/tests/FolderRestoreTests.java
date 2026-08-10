@@ -21,6 +21,10 @@ import java.util.UUID;
  * Date: 10.08.2026
  */
 public class FolderRestoreTests extends BaseTest {
+    /**
+     * Создаёт тестовую папку и удаляет её (помещает в корзину)
+     * @return список тестовых данных: путь, имя, id созданной папки и путь удалённой папки в корзине
+     */
     private List<String> createAndDeleteFolder() {
         ResourceDataResponse createdFolder = createFolder();
         String createdPath = createdFolder.getPath();

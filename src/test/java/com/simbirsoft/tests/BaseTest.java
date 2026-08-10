@@ -18,8 +18,13 @@ import java.util.UUID;
  * Date: 04.08.2026
  */
 public class BaseTest {
+    // Список путей тестовых папок для удаления
     protected final List<String> createdPaths = new ArrayList<>();
 
+    /**
+     * Создаёт тестовую папку и сохраняет её путь для дальнейшего удаления
+     * @return response с данными созданного ресурса
+     */
     protected ResourceDataResponse createFolder() {
         String path = "test-folder-" + UUID.randomUUID().toString().substring(0, 8);
         ResourceApiClient.createResource(path);

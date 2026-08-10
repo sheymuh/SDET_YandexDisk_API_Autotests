@@ -1,11 +1,15 @@
 package com.simbirsoft.tests;
 
+import com.simbirsoft.api.BaseApiClient;
 import com.simbirsoft.api.ResourceApiClient;
 import com.simbirsoft.dto.ResourceDataResponse;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.UUID;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasKey;
 
 /**
  * FolderCreationTests.java
@@ -40,7 +44,15 @@ public class FolderCreationTests extends BaseTest {
         String path = "";
         int expectedCode = 400;
 
-        ResourceApiClient.createResourceWithInvalidPath(path, expectedCode);
+        given()
+                .spec(BaseApiClient.SPEC)
+                .queryParam(ResourceApiClient.PATH_PARAM, path)
+                .put(ResourceApiClient.RESOURCES_ENDPOINT)
+                .then()
+                .statusCode(expectedCode)
+                .body(ResourceApiClient.BODY_ROOT, hasKey("error"))
+                .body(ResourceApiClient.BODY_ROOT, hasKey("description"))
+                .body(ResourceApiClient.BODY_ROOT, hasKey("message"));
     }
 
     @Test(description = "Проверка создания папки по существующему пути")
@@ -48,7 +60,15 @@ public class FolderCreationTests extends BaseTest {
         String path = createFolder().getPath();
         int expectedCode = 409;
 
-        ResourceApiClient.createResourceWithInvalidPath(path, expectedCode);
+        given()
+                .spec(BaseApiClient.SPEC)
+                .queryParam(ResourceApiClient.PATH_PARAM, path)
+                .put(ResourceApiClient.RESOURCES_ENDPOINT)
+                .then()
+                .statusCode(expectedCode)
+                .body(ResourceApiClient.BODY_ROOT, hasKey("error"))
+                .body(ResourceApiClient.BODY_ROOT, hasKey("description"))
+                .body(ResourceApiClient.BODY_ROOT, hasKey("message"));
     }
 
     @Test(description = "Проверка создания папки по слишком длинному пути (>500 символов)")
@@ -56,6 +76,14 @@ public class FolderCreationTests extends BaseTest {
         String path = "a".repeat(501);
         int expectedCode = 404;
 
-        ResourceApiClient.createResourceWithInvalidPath(path, expectedCode);
+        given()
+                .spec(BaseApiClient.SPEC)
+                .queryParam(ResourceApiClient.PATH_PARAM, path)
+                .put(ResourceApiClient.RESOURCES_ENDPOINT)
+                .then()
+                .statusCode(expectedCode)
+                .body(ResourceApiClient.BODY_ROOT, hasKey("error"))
+                .body(ResourceApiClient.BODY_ROOT, hasKey("description"))
+                .body(ResourceApiClient.BODY_ROOT, hasKey("message"));
     }
 }

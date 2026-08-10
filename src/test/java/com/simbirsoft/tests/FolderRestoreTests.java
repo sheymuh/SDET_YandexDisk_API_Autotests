@@ -1,5 +1,6 @@
 package com.simbirsoft.tests;
 
+import com.simbirsoft.api.BaseApiClient;
 import com.simbirsoft.api.ResourceApiClient;
 import com.simbirsoft.dto.Item;
 import com.simbirsoft.dto.ResourceDataResponse;
@@ -10,6 +11,9 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasKey;
 
 /**
  * FolderRestoreTests.java
@@ -93,6 +97,15 @@ public class FolderRestoreTests extends BaseTest {
         String nonExistingPath = "non-exist-path";
         int code = 404;
 
-        ResourceApiClient.restoreResourceWithInvalidPath(nonExistingPath, code);
+        given()
+                .spec(BaseApiClient.SPEC)
+                .queryParam(ResourceApiClient.PATH_PARAM, nonExistingPath)
+                .put(ResourceApiClient.RESTORE_RESOURCE_ENDPOINT)
+                .then()
+                .statusCode(code)
+                .body(ResourceApiClient.BODY_ROOT, hasKey("error"))
+                .body(ResourceApiClient.BODY_ROOT, hasKey("description"))
+                .body(ResourceApiClient.BODY_ROOT, hasKey("message"))
+                .extract().response();
     }
 }

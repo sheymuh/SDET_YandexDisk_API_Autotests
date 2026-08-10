@@ -1,6 +1,6 @@
 package com.simbirsoft.tests;
 
-import com.simbirsoft.helpers.ParameterProvider;
+import com.simbirsoft.api.BaseApiClient;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -16,18 +16,15 @@ import static io.restassured.RestAssured.given;
  * <p>
  * Date: 04.08.2026
  */
-public class AuthTests extends BaseTest {
-    private final String DISK_PATH = "v1/disk/";
-
+public class AuthTests {
     @Test(description = "Проверка авторизации с валидным OAuth токеном")
     void authWithValidToken() {
         String login = "andreyblack45";
         String displayName = "Шеймухов Андрей";
 
         Response response = given()
-                .spec(spec)
-                .auth().oauth2(ParameterProvider.get("auth.token"))
-                .get(DISK_PATH)
+                .spec(BaseApiClient.SPEC)
+                .get()
                 .then()
                 .statusCode(200)
                 .extract().response();
@@ -46,8 +43,9 @@ public class AuthTests extends BaseTest {
     @Test(description = "Проверка авторизации без токена")
     void authWithoutToken() {
         Response response = given()
-                .spec(spec)
-                .get(DISK_PATH)
+                .spec(BaseApiClient.SPEC)
+                .auth().none()
+                .get()
                 .then()
                 .statusCode(401)
                 .extract().response();

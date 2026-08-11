@@ -6,7 +6,7 @@ import com.simbirsoft.dto.ResourceDataResponse;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.*;
 
 /**
  * CategoryApiClient.java
@@ -25,6 +25,14 @@ public class ResourceApiClient extends BaseApiClient {
     public static final String PATH_PARAM = "path";
 
     private static Gson gson = new Gson();
+
+    public static int getResourceStatusCode(String path) {
+        return given()
+                .spec(SPEC)
+                .queryParam(PATH_PARAM, path)
+                .get(RESOURCES_ENDPOINT)
+                .getStatusCode();
+    }
 
     public static ResourceDataResponse getResource(String path, int code) {
         Response response = given()
@@ -87,10 +95,9 @@ public class ResourceApiClient extends BaseApiClient {
     public static void clearTrash() {
         given()
                 .spec(SPEC)
-                .queryParam("force_async", false)
                 .delete(RESOURCES_TRASH_ENDPOINT)
                 .then()
-                .statusCode(204);
+                .statusCode(anyOf(is(204), is(202)));
     }
 
     public static ResourceActionResponse restoreResource(String path) {

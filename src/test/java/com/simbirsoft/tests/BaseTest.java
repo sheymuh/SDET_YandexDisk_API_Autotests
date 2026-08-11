@@ -2,7 +2,10 @@ package com.simbirsoft.tests;
 
 import com.simbirsoft.api.ResourceApiClient;
 import com.simbirsoft.dto.ResourceDataResponse;
+import com.simbirsoft.helpers.AsyncOperationHelper;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +22,12 @@ import java.util.UUID;
  */
 public class BaseTest {
     // Список путей тестовых папок для удаления
-    protected final List<String> createdPaths = new ArrayList<>();
+    protected final ThreadLocal<List<String>> createdPaths = ThreadLocal.withInitial(ArrayList::new);
+
+    @BeforeMethod
+    public void setUp() {
+        createdPaths.get().clear();
+    }
 
     /**
      * Создаёт тестовую папку и сохраняет её путь для дальнейшего удаления
@@ -28,16 +36,25 @@ public class BaseTest {
     protected ResourceDataResponse createFolder() {
         String path = "test-folder-" + UUID.randomUUID().toString().substring(0, 8);
         ResourceApiClient.createResource(path);
-        createdPaths.add(path);
+        ResourceDataResponse createdFolder = AsyncOperationHelper.waitForResourceCreation(path);
+        createdPaths.get().add(path);
 
-        return ResourceApiClient.getResource(path, 200);
+        return createdFolder;
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     void tearDown() {
-        createdPaths.forEach(ResourceApiClient::deleteResourcePermanently);
-        createdPaths.clear();
+        createdPaths.get().forEach(path -> {
+            ResourceApiClient.deleteResourcePermanently(path);
+            AsyncOperationHelper.waitForResourceDeletion(path);
+        });
+        createdPaths.get().clear();
+        createdPaths.remove();
+    }
 
-        ResourceApiClient.clearTrash();
+    @AfterSuite
+    public static void clearTrash() {
+        AsyncOperationHelper.clearTrashWithRetry();
+        AsyncOperationHelper.waitForTrashClearing();
     }
 }

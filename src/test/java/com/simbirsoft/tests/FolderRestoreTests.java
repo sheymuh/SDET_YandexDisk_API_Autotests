@@ -2,9 +2,8 @@ package com.simbirsoft.tests;
 
 import com.simbirsoft.api.BaseApiClient;
 import com.simbirsoft.api.ResourceApiClient;
-import com.simbirsoft.dto.Item;
 import com.simbirsoft.dto.ResourceDataResponse;
-import com.simbirsoft.helpers.FoldersHelper;
+import com.simbirsoft.helpers.AsyncOperationHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -36,14 +35,10 @@ public class FolderRestoreTests extends BaseTest {
         String createdResourceId = createdFolder.getResourceId();
 
         ResourceApiClient.deleteResource(createdPath);
-        createdPaths.removeLast();
+        AsyncOperationHelper.waitForResourceDeletion(createdPath);
+        createdPaths.get().removeLast();
 
-        String rootFolder = "/";
-        ResourceDataResponse trash = ResourceApiClient.getTrashResource(rootFolder, 200);
-
-        List<Item> trashResources = trash.getEmbedded().getItems();
-
-        String deletedResourcePath = FoldersHelper.findResourceById(trashResources, createdResourceId).getPath();
+        String deletedResourcePath = AsyncOperationHelper.waitForResourceInTrash(createdResourceId).getPath();
 
         return Arrays.asList(createdPath, createdName, createdResourceId, deletedResourcePath);
     }
@@ -58,9 +53,8 @@ public class FolderRestoreTests extends BaseTest {
         String deletedResourcePath = testData.getLast();
 
         ResourceApiClient.restoreResource(deletedResourcePath);
-        createdPaths.add(createdPath);
-
-        ResourceDataResponse restoredResource = ResourceApiClient.getResource(createdPath, 200);
+        ResourceDataResponse restoredResource = AsyncOperationHelper.waitForResourceRestoration(createdPath);
+        createdPaths.get().add(createdPath);
 
         Assert.assertEquals(restoredResource.getPath(), createdPath,
                 "Путь восстановленной папки не равен пути удалённой папки");
@@ -80,9 +74,8 @@ public class FolderRestoreTests extends BaseTest {
         String newName = "renamed-folder-" + UUID.randomUUID().toString().substring(0, 8);
         String newPath = "disk:/" + newName;
         ResourceApiClient.restoreResourceWithNewName(deletedResourcePath, newName);
-        createdPaths.add(newPath);
-
-        ResourceDataResponse restoredResource = ResourceApiClient.getResource(newName, 200);
+        ResourceDataResponse restoredResource = AsyncOperationHelper.waitForResourceRestoration(newPath);
+        createdPaths.get().add(newPath);
 
         Assert.assertEquals(restoredResource.getPath(), newPath,
                 "Путь восстановленной папки не содержит новое имя");

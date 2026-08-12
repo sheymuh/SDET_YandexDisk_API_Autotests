@@ -24,7 +24,7 @@ import static org.awaitility.pollinterval.FibonacciPollInterval.fibonacci;
  * <p>
  * Date: 10.08.2026
  */
-public final class AsyncOperationHelper {
+public final class WaitOperationHelper {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
 
     static {

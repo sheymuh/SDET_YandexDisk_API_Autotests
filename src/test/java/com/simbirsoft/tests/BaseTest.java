@@ -2,7 +2,7 @@ package com.simbirsoft.tests;
 
 import com.simbirsoft.api.ResourceApiClient;
 import com.simbirsoft.dto.ResourceDataResponse;
-import com.simbirsoft.helpers.AsyncOperationHelper;
+import com.simbirsoft.helpers.WaitOperationHelper;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
@@ -36,7 +36,7 @@ public class BaseTest {
     protected ResourceDataResponse createFolder() {
         String path = "test-folder-" + UUID.randomUUID().toString().substring(0, 8);
         ResourceApiClient.createResource(path);
-        ResourceDataResponse createdFolder = AsyncOperationHelper.waitForResourceCreation(path);
+        ResourceDataResponse createdFolder = WaitOperationHelper.waitForResourceCreation(path);
         createdPaths.get().add(path);
 
         return createdFolder;
@@ -46,7 +46,7 @@ public class BaseTest {
     void tearDown() {
         createdPaths.get().forEach(path -> {
             ResourceApiClient.deleteResourcePermanently(path);
-            AsyncOperationHelper.waitForResourceDeletion(path);
+            WaitOperationHelper.waitForResourceDeletion(path);
         });
         createdPaths.get().clear();
         createdPaths.remove();
@@ -54,7 +54,7 @@ public class BaseTest {
 
     @AfterSuite
     public static void clearTrash() {
-        AsyncOperationHelper.clearTrashWithRetry();
-        AsyncOperationHelper.waitForTrashClearing();
+        WaitOperationHelper.clearTrashWithRetry();
+        WaitOperationHelper.waitForTrashClearing();
     }
 }

@@ -3,7 +3,7 @@ package com.simbirsoft.tests;
 import com.simbirsoft.api.BaseApiClient;
 import com.simbirsoft.api.ResourceApiClient;
 import com.simbirsoft.dto.ResourceDataResponse;
-import com.simbirsoft.helpers.AsyncOperationHelper;
+import com.simbirsoft.helpers.WaitOperationHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -35,10 +35,10 @@ public class FolderRestoreTests extends BaseTest {
         String createdResourceId = createdFolder.getResourceId();
 
         ResourceApiClient.deleteResource(createdPath);
-        AsyncOperationHelper.waitForResourceDeletion(createdPath);
+        WaitOperationHelper.waitForResourceDeletion(createdPath);
         createdPaths.get().removeLast();
 
-        String deletedResourcePath = AsyncOperationHelper.waitForResourceInTrash(createdResourceId).getPath();
+        String deletedResourcePath = WaitOperationHelper.waitForResourceInTrash(createdResourceId).getPath();
 
         return Arrays.asList(createdPath, createdName, createdResourceId, deletedResourcePath);
     }
@@ -53,7 +53,7 @@ public class FolderRestoreTests extends BaseTest {
         String deletedResourcePath = testData.getLast();
 
         ResourceApiClient.restoreResource(deletedResourcePath);
-        ResourceDataResponse restoredResource = AsyncOperationHelper.waitForResourceRestoration(createdPath);
+        ResourceDataResponse restoredResource = WaitOperationHelper.waitForResourceRestoration(createdPath);
         createdPaths.get().add(createdPath);
 
         Assert.assertEquals(restoredResource.getPath(), createdPath,
@@ -74,7 +74,7 @@ public class FolderRestoreTests extends BaseTest {
         String newName = "renamed-folder-" + UUID.randomUUID().toString().substring(0, 8);
         String newPath = "disk:/" + newName;
         ResourceApiClient.restoreResourceWithNewName(deletedResourcePath, newName);
-        ResourceDataResponse restoredResource = AsyncOperationHelper.waitForResourceRestoration(newPath);
+        ResourceDataResponse restoredResource = WaitOperationHelper.waitForResourceRestoration(newPath);
         createdPaths.get().add(newPath);
 
         Assert.assertEquals(restoredResource.getPath(), newPath,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Yandex Disk API Tests" parallel="classes" thread-count="4">
+<suite name="Yandex Disk API Tests" parallel="classes" thread-count="3">
     <parameter name="testType" value="api"/>
 
     <test name="API Tests" preserve-order="false">
@@ -9,6 +9,7 @@
             <class name="com.simbirsoft.tests.FolderCreationTests"/>
             <class name="com.simbirsoft.tests.FolderDeleteTests"/>
             <class name="com.simbirsoft.tests.FolderRestoreTests"/>
+            <class name="com.simbirsoft.tests.FileTransferTests"/>
         </classes>
     </test>
 </suite>

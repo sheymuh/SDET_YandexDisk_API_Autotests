@@ -3,6 +3,7 @@ package com.simbirsoft.tests;
 import com.simbirsoft.api.ResourceApiClient;
 import com.simbirsoft.dto.ResourceDataResponse;
 import com.simbirsoft.helpers.WaitOperationHelper;
+import com.simbirsoft.helpers.FileHelper;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
@@ -30,11 +31,21 @@ public class BaseTest {
     }
 
     /**
-     * Создаёт тестовую папку и сохраняет её путь для дальнейшего удаления
+     * Создаёт тестовую папку с уникальным названием в корне диска
+     * и сохраняет её путь для дальнейшего удаления
      * @return response с данными созданного ресурса
      */
     protected ResourceDataResponse createFolder() {
         String path = "test-folder-" + UUID.randomUUID().toString().substring(0, 8);
+        return createFolder(path);
+    }
+
+    /**
+     * Создаёт тестовую папку и сохраняет её путь для дальнейшего удаления
+     * @param path путь создаваемой папки
+     * @return response с данными созданного ресурса
+     */
+    protected ResourceDataResponse createFolder(String path) {
         ResourceApiClient.createResource(path);
         ResourceDataResponse createdFolder = WaitOperationHelper.waitForResourceCreation(path);
         createdPaths.get().add(path);
@@ -53,7 +64,9 @@ public class BaseTest {
     }
 
     @AfterSuite
-    public static void clearTrash() {
+    void tearDownSuite() {
+        FileHelper.cleanupTestFiles();
+
         WaitOperationHelper.clearTrashWithRetry();
         WaitOperationHelper.waitForTrashClearing();
     }

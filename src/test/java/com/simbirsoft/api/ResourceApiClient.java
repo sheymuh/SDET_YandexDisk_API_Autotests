@@ -3,13 +3,9 @@ package com.simbirsoft.api;
 import com.google.gson.Gson;
 import com.simbirsoft.dto.ResourceActionResponse;
 import com.simbirsoft.dto.ResourceDataResponse;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -30,6 +26,7 @@ public class ResourceApiClient extends BaseApiClient {
     public static final String UPLOAD_RESOURCE_ENDPOINT = RESOURCES_ENDPOINT + "upload";
     public static final String COPY_RESOURCE_ENDPOINT = RESOURCES_ENDPOINT + "copy";
     public static final String DOWNLOAD_RESOURCE_ENDPOINT = RESOURCES_ENDPOINT + "download";
+    public static final String FILES_ENDPOINT = RESOURCES_ENDPOINT + "files";
     public static final String BODY_ROOT = "$";
     public static final String PATH_PARAM = "path";
 

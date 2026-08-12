@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["limit", "offset", "items"],
+  "properties": {
+    "limit": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "offset":  {
+      "type": "integer",
+      "minimum": 0
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "type", "name", "resource_id"],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["file"]
+          },
+          "name": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mime_type": {
+            "type": "string"
+          },
+          "md5": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "preview": {
+            "type": "string"
+          },
+          "public_key": {
+            "type": "string"
+          },
+          "public_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "media_type": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "resource_id": {
+            "type": "string"
+          },
+          "share": {
+            "type": "object",
+            "properties": {
+              "is_owned": {
+                "type": "boolean"
+              },
+              "is_root": {
+                "type": "boolean"
+              },
+              "rights": {
+                "type": "string"
+              }
+            }
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "comment_ids": {
+            "type": "object",
+            "properties": {
+              "public_resource": {
+                "type": "string"
+              },
+              "private_resource": {
+                "type": "string"
+              }
+            }
+          },
+          "custom_properties": {
+            "type": "object"
+          },
+          "exif": {
+            "type": "object",
+            "properties": {
+              "date_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "gps_latitude": {
+                "type": "object"
+              },
+              "gps_longitude": {
+                "type": "object"
+              }
+            }
+          },
+          "antivirus_status": {
+            "type": "string"
+          },
+          "photoslice_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sizes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
 /**
  * FileHelper.java
@@ -34,11 +35,11 @@ public final class FileHelper {
     }
 
     public static void cleanupTestFiles() {
-        try {
-            Path dir = Path.of(TEST_FILES_RELATIVE_PATH);
-            if (Files.exists(dir)) {
-                Files.walk(dir)
-                        .filter(Files::isRegularFile)
+        Path dir = Path.of(TEST_FILES_RELATIVE_PATH);
+
+        if (Files.exists(dir)) {
+            try (Stream<Path> walk = Files.walk(dir)) {
+                walk.filter(Files::isRegularFile)
                         .forEach(path -> {
                             try {
                                 Files.delete(path);
@@ -46,9 +47,9 @@ public final class FileHelper {
                                 System.err.println("Не удалось удалить файл: " + path);
                             }
                         });
+            } catch (IOException e) {
+                System.err.println("Не удалось очистить тестовые файлы");
             }
-        } catch (IOException e) {
-            System.err.println("Не удалось очистить тестовые файлы");
         }
     }
 }

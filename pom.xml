@@ -19,6 +19,7 @@
         <lombok.version>1.18.34</lombok.version>
         <gson.version>2.13.0</gson.version>
         <awaitility.version>4.3.0</awaitility.version>
+        <json-schema-validator.version>6.0.1</json-schema-validator.version>
     </properties>
 
     <dependencies>
@@ -51,6 +52,12 @@
             <artifactId>awaitility</artifactId>
             <version>${awaitility.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${json-schema-validator.version}</version>
         </dependency>
     </dependencies>
 

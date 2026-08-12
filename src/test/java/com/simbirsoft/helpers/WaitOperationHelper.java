@@ -16,9 +16,9 @@ import static org.awaitility.Awaitility.await;
 import static org.awaitility.pollinterval.FibonacciPollInterval.fibonacci;
 
 /**
- * AsyncOperationHelper.java
+ * WaitOperationHelper.java
  * <p>
- * Вспомогательный класс для работы с асинхронными операциями Яндекс.Диска
+ * Вспомогательный класс для ожидания выполнения операций Яндекс.Диска
  * <p>
  * Author: Sheimukhov Andrei
  * <p>

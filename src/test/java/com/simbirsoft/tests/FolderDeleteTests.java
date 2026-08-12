@@ -4,7 +4,7 @@ import com.simbirsoft.api.BaseApiClient;
 import com.simbirsoft.api.ResourceApiClient;
 import com.simbirsoft.dto.Item;
 import com.simbirsoft.dto.ResourceDataResponse;
-import com.simbirsoft.helpers.AsyncOperationHelper;
+import com.simbirsoft.helpers.WaitOperationHelper;
 import com.simbirsoft.helpers.FoldersHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -33,10 +33,10 @@ public class FolderDeleteTests extends BaseTest {
         String createdResourceId = createdFolder.getResourceId();
 
         ResourceApiClient.deleteResource(createdPath);
-        AsyncOperationHelper.waitForResourceDeletion(createdPath);
+        WaitOperationHelper.waitForResourceDeletion(createdPath);
         createdPaths.get().removeLast();
 
-        Item deletedResource = AsyncOperationHelper.waitForResourceInTrash(createdResourceId);
+        Item deletedResource = WaitOperationHelper.waitForResourceInTrash(createdResourceId);
 
         Assert.assertNotNull(deletedResource, "В корзине не найдена удалённая папка");
         Assert.assertTrue(deletedResource.getPath().contains(createdName),
@@ -52,7 +52,7 @@ public class FolderDeleteTests extends BaseTest {
         String createdResourceId = createdFolder.getResourceId();
 
         ResourceApiClient.deleteResourcePermanently(createdPath);
-        AsyncOperationHelper.waitForResourceDeletion(createdPath);
+        WaitOperationHelper.waitForResourceDeletion(createdPath);
         createdPaths.get().removeLast();
 
         ResourceApiClient.getResource(createdPath, 404);

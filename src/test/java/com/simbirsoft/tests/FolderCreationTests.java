@@ -3,7 +3,7 @@ package com.simbirsoft.tests;
 import com.simbirsoft.api.BaseApiClient;
 import com.simbirsoft.api.ResourceApiClient;
 import com.simbirsoft.dto.ResourceDataResponse;
-import com.simbirsoft.helpers.AsyncOperationHelper;
+import com.simbirsoft.helpers.WaitOperationHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -27,7 +27,7 @@ public class FolderCreationTests extends BaseTest {
     void createFolderWithValidPath() {
         String path = "test-folder-" + UUID.randomUUID().toString().substring(0, 8);
         ResourceApiClient.createResource(path);
-        AsyncOperationHelper.waitForResourceCreation(path);
+        WaitOperationHelper.waitForResourceCreation(path);
         createdPaths.get().add(path);
 
         String root = "disk:/";
